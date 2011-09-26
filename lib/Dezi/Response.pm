@@ -1,19 +1,30 @@
-package Dezi::Doc;
+package Dezi::Response;
 use strict;
 use warnings;
 
 our $VERSION = '0.001000';
 
 use Carp;
-use Class::XSAccessor {
-    constructor => 'new',
-    accessors   => [qw( mime_type summary title content uri mtime size )],
-};
+use JSON;
 
-sub as_string_ref {
-    my $self    = shift;
-    my $content = $self->content;
-    return \$content;
+# TODO expose all attributes?
+use Class::XSAccessor { accessors =>
+        [qw( results total search_time build_time query fields facets )], };
+
+use Dezi::Doc;
+
+sub new {
+    my $class     = shift;
+    my $http_resp = shift or croak "HTTP::Response required";
+    my $json      = from_json( $http_resp->decoded_content );
+    my @res;
+    for my $r ( @{ $json->{results} } ) {
+        push @res, Dezi::Doc->new(%$r);
+    }
+
+    # overwrite with objects
+    $json->{result} = \@res;
+    return bless $json, $class;
 }
 
 1;

@@ -7,7 +7,11 @@ our $VERSION = '0.001000';
 
 use Carp;
 use LWP::UserAgent;
+use HTTP::Request;
+use URI::Query;
 use JSON;
+use File::Slurp;
+use Dezi::Response;
 
 =head1 NAME
 
@@ -23,16 +27,16 @@ Dezi::Client - interact with a Dezi server
  );
  
  # add/update a filesystem document to the index
- $client->index( file => 'path/to/file.html' );
+ $client->index( 'path/to/file.html' );
  
  # add/update an in-memory document to the index
- $client->index( buf => \$html_doc, uri => 'foo/bar.html' );
+ $client->index( \$html_doc, uri => 'foo/bar.html' );
  
  # add/update a Dezi::Doc to the index
- $client->index( doc => $dezi_doc );
+ $client->index( $dezi_doc );
  
  # remove a document from the index
- $client->delete( uri => '/doc/uri/relative/to/index' );
+ $client->delete( '/doc/uri/relative/to/index' );
  
  # search the index
  my $response = $client->search( q => 'foo' );
@@ -44,7 +48,7 @@ Dezi::Client - interact with a Dezi server
  }
  
  # print stats
- printf("       hits: %d\n", $response->count);
+ printf("       hits: %d\n", $response->total);
  printf("search time: %s\n", $response->search_time);
  printf(" build time: %s\n", $response->build_time);
  printf("      query: %s\n", $response->query);
@@ -116,26 +120,26 @@ sub new {
     return $self;
 }
 
-=head2 index( I<params> )
+=head2 index( I<doc> [, I<uri>] )
 
-Add or update a document. I<params> should be a key/value pair
-where the key is one of:
+Add or update a document. I<doc> should be one of:
 
 =over
 
-=item file I<path>
+=item I<path>
 
 I<path> should be a readable file on an accessible filesystem.
 I<path> will be read with File::Slurp.
 
-=item buf I<scalar_ref>
+=item I<scalar_ref>
 
 I<scalar_ref> should be a reference to a string representing
-the document to be indexed.
+the document to be indexed. If this is the case, then I<uri>
+must be passed as the second argument.
 
-=item doc I<dezi_doc>
+=item I<dezi_doc>
 
-I<dezi_doc> should be a Dezi::Doc object.
+A Dezi::Doc object.
 
 =back
 
@@ -150,6 +154,36 @@ determine the result. Example:
 =cut
 
 sub index {
+    my $self = shift;
+    my $doc  = shift or croak "doc required";
+    my $uri  = shift;                           # optional
+
+    my $body_ref;
+    if ( !ref $doc ) {
+        my $buf = read_file($doc);
+        if ( !defined $buf ) {
+            croak "unable to read $doc: $!";
+        }
+        $body_ref = \$buf;
+        $uri ||= $doc;
+    }
+    elsif ( ref $doc eq 'SCALAR' ) {
+        if ( !defined $uri and !length $uri ) {
+            croak "uri required when passing scalar ref";
+        }
+        $body_ref = $doc;
+    }
+    elsif ( ref $doc and $doc->isa('Dezi::Doc') ) {
+        $body_ref = $doc->as_string_ref;
+        $uri ||= $doc->uri;
+    }
+    else {
+        croak "doc must be a scalar string, scalar ref or Dezi::Doc object";
+    }
+
+    my $server_uri = $self->{index_uri} . '/' . $uri;
+
+    return $self->{ua}->post( $server_uri, { doc => $$body_ref } );
 
 }
 
@@ -159,23 +193,46 @@ Fetch search results from a Dezi server. I<params> can be
 any key/value pair as described in Search::OpenSearch. The only
 required key is B<q> for the query string.
 
-Returns a Dezi::Client::Response object.
+Returns a Dezi::Response object on success, or 0 on failure. Check
+the last_response() accessor for the raw HTTP::Response object.
 
 =cut
 
 sub search {
-
+    my $self = shift;
+    my %args = @_;
+    if ( !exists $args{q} ) {
+        croak "q required";
+    }
+    my $search_uri = $self->{search_uri};
+    my $query      = URI::Query->new(%args);
+    $query->replace( format => 'json' );    # force json response
+    my $resp = $self->{ua}->get( $search_uri . '?' . $query );
+    if ( !$resp->is_success ) {
+        $self->{last_response} = $resp;
+        return 0;
+    }
+    return Dezi::Response->new($resp);
 }
 
-=head2 delete( I<params> )
+sub last_response {
+    return shift->{last_response};
+}
 
-Remove a document from the server. I<params> must include a key/value
-pair of B<uri> and the document's I<uri>.
+=head2 delete( I<uri> )
+
+Remove a document from the server. I<uri> must be the document's URI.
 
 =cut
 
 sub delete {
+    my $self = shift;
+    my $uri = shift or croak "uri required";
 
+    my $server_uri = $self->{index_uri} . '/' . $uri;
+    my $req = HTTP::Request->new( 'DELETE', $server_uri );
+
+    return $self->{ua}->request($req);
 }
 
 1;
