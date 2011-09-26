@@ -11,6 +11,11 @@ repository 'git://github.com/karpet/dezi-client-perl.git';
 build_requires 'Test::More';
 
 requires 'LWP::UserAgent';
+requires 'Class::XSAccessor';
+requires 'HTTP::Request';
+requires 'SWISH::Prog::Utils';
+requires 'URI::Query';
+requries 'File::Slurp';
 requires 'JSON';
 requires 'Carp';
 

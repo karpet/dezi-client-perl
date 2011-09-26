@@ -7,7 +7,7 @@ our $VERSION = '0.001000';
 use Carp;
 use Class::XSAccessor {
     constructor => 'new',
-    accessors   => [qw( mime_type summary title content uri mtime size )],
+    accessors   => [qw( mime_type summary title content uri mtime size score )],
 };
 
 sub as_string_ref {

@@ -23,7 +23,7 @@ sub new {
     }
 
     # overwrite with objects
-    $json->{result} = \@res;
+    $json->{results} = \@res;
     return bless $json, $class;
 }
 

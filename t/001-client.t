@@ -32,8 +32,8 @@ SKIP: {
     ok( $resp->is_success, "index scalar_ref success" );
 
     # add/update a Dezi::Doc to the index
-    my $dezi_doc = Dezi::Doc->new( uri => 't/test-dezi-doc.html' );
-    $dezi_doc->content( read_file( $dezi_doc->uri ) );
+    my $dezi_doc = Dezi::Doc->new( uri => 't/test-dezi-doc.xml' );
+    $dezi_doc->content( scalar read_file( $dezi_doc->uri ) );
     ok( $resp = $client->index($dezi_doc), "index Dezi::Doc" );
     ok( $resp->is_success, "index Dezi::Doc success" );
 
@@ -43,10 +43,14 @@ SKIP: {
     ok( $resp->is_success, "delete success" );
 
     # search the index
-    ok( my $response = $client->search( q => 'foo' ), "search" );
+    ok( my $response = $client->search( q => 'dezi' ), "search" );
+
+    #diag( dump $response );
 
     # iterate over results
     for my $result ( @{ $response->results } ) {
+
+        #diag( dump $result );
         ok( $result->uri, "get result uri" );
         diag(
             sprintf(
@@ -57,10 +61,9 @@ SKIP: {
     }
 
     # print stats
-    is( $response->total, 3, "got 3 results" );
+    is( $response->total, 2, "got 2 results" );
     ok( $response->search_time, "got search_time" );
     ok( $response->build_time,  "got build time" );
-    is( $response->query, "foo", "round-trip query string" );
-    
-    diag( dump $response );
+    is( $response->query, "dezi", "round-trip query string" );
+
 }

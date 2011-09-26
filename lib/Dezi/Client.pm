@@ -9,6 +9,7 @@ use Carp;
 use LWP::UserAgent;
 use HTTP::Request;
 use URI::Query;
+use SWISH::Prog::Utils;    # for MIME types
 use JSON;
 use File::Slurp;
 use Dezi::Response;
@@ -120,7 +121,7 @@ sub new {
     return $self;
 }
 
-=head2 index( I<doc> [, I<uri>] )
+=head2 index( I<doc> [, I<uri>, I<content-type>] )
 
 Add or update a document. I<doc> should be one of:
 
@@ -143,6 +144,11 @@ A Dezi::Doc object.
 
 =back
 
+I<uri> and I<content-type> are optional, except in the
+I<scalar_ref> case, where I<uri> is required. If specified,
+the values are passed explicitly in the HTTP headers to the Dezi
+server. If not specified, they are (hopefully intelligently) guessed at.
+
 Returns a HTTP::Response object which can be interrogated to
 determine the result. Example:
 
@@ -154,11 +160,13 @@ determine the result. Example:
 =cut
 
 sub index {
-    my $self = shift;
-    my $doc  = shift or croak "doc required";
-    my $uri  = shift;                           # optional
+    my $self         = shift;
+    my $doc          = shift or croak "doc required";
+    my $uri          = shift;                           # optional
+    my $content_type = shift;                           # optional
 
     my $body_ref;
+
     if ( !ref $doc ) {
         my $buf = read_file($doc);
         if ( !defined $buf ) {
@@ -175,15 +183,20 @@ sub index {
     }
     elsif ( ref $doc and $doc->isa('Dezi::Doc') ) {
         $body_ref = $doc->as_string_ref;
-        $uri ||= $doc->uri;
+        $uri          ||= $doc->uri;
+        $content_type ||= $doc->mime_type;
     }
     else {
         croak "doc must be a scalar string, scalar ref or Dezi::Doc object";
     }
 
     my $server_uri = $self->{index_uri} . '/' . $uri;
+    my $req = HTTP::Request->new( 'POST', $server_uri );
+    $content_type ||= SWISH::Prog::Utils->mime_type($uri);
+    $req->header( 'Content-Type' => $content_type );
+    $req->content($$body_ref);    # TODO decode into bytes
 
-    return $self->{ua}->post( $server_uri, { doc => $$body_ref } );
+    return $self->{ua}->request($req);
 
 }
 
