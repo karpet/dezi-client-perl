@@ -99,7 +99,10 @@ sub new {
         $self->{index_uri}  = $self->{server} . delete $args{index};
     }
     else {
-        my $resp  = $self->{ua}->get( $self->{server} );
+        my $resp = $self->{ua}->get( $self->{server} );
+        if ( !$resp->is_success ) {
+            croak $resp->status_line;
+        }
         my $paths = from_json( $resp->decoded_content );
         if (   !$resp->is_success
             or !$paths
@@ -227,6 +230,19 @@ sub search {
     }
     return Dezi::Response->new($resp);
 }
+
+=head2 last_response
+
+Returns the last HTTP::Response object that the Client object
+interacted with. Useful when search() returns false (HTTP failure).
+Example:
+
+ my $resp = $client->search( q => 'foo' );
+ if (!$resp) {
+     die "Dezi search failed: " . $client->last_response->status_line;
+ }
+
+=cut
 
 sub last_response {
     return shift->{last_response};

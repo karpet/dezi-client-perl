@@ -13,6 +13,47 @@ use Class::XSAccessor { accessors =>
 
 use Dezi::Doc;
 
+=pod
+
+=head1 NAME
+
+Dezi::Response - Dezi search server response
+
+=head1 SYNOPSIS
+
+ use Dezi::Client;
+ my $client = Dezi::Client->new('http://localhost:5000');
+ 
+ my $response = $client->search( q => 'foo' );
+ # $response isa Dezi::Response
+ 
+ # iterate over results
+ for my $result (@{ $response->results }) {
+     printf("--\n uri: %s\n title: %s\n score: %s\n",
+        $result->uri, $result->title, $result->score);
+ }
+ 
+ # print stats
+ printf("       hits: %d\n", $response->total);
+ printf("search time: %s\n", $response->search_time);
+ printf(" build time: %s\n", $response->build_time);
+ printf("      query: %s\n", $response->query);
+
+=head1 DESCRIPTION
+
+Dezi::Response represents a Dezi server response.
+
+This class is used internally by Dezi::Client.
+
+=head1 METHODS
+
+=head2 new( I<http_response> )
+
+Returns a new response. I<http_response> should be a HTTP::Response
+object from a Dezi JSON response.
+
+=cut
+
 sub new {
     my $class     = shift;
     my $http_resp = shift or croak "HTTP::Response required";
@@ -26,6 +67,39 @@ sub new {
     $json->{results} = \@res;
     return bless $json, $class;
 }
+
+=head2 results
+
+Returns array ref of Dezi::Doc objects.
+
+=head2 total 
+
+Returns integer of hit count.
+
+=head2 search_time 
+
+Returns string of floating point time Dezi server took to search.
+
+=head2 build_time 
+
+Returns string of floating point time Dezi server took to build
+response.
+
+=head2 query 
+
+Returns the query string.
+
+=head2 fields 
+
+Returns array ref of field names.
+
+=head2 facets
+
+Returns array ref of facet objects.
+
+B<Facet objects are currently hashrefs. This may change in future.>
+
+=cut
 
 1;
 

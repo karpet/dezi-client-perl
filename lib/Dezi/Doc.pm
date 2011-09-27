@@ -7,8 +7,94 @@ our $VERSION = '0.001000';
 use Carp;
 use Class::XSAccessor {
     constructor => 'new',
-    accessors   => [qw( mime_type summary title content uri mtime size score )],
+    accessors => [qw( mime_type summary title content uri mtime size score )],
 };
+
+=pod
+
+=head1 NAME
+
+Dezi::Doc - a Dezi client document
+
+=head1 SYNOPSIS
+
+ # add doc to the index
+ use Dezi::Doc;
+ my $html = "<html>hello world</html>";
+ my $doc = Dezi::Doc->new(
+     mime_type => 'text/html',
+     uri       => 'foo/bar.html',
+     mtime     => time(),
+     size      => length $html,
+     content   => $html,
+ );
+ $client->index( $doc );
+ 
+ # search results are also Dezi::Doc objects
+ for my $doc (@{ $response->results }) {
+     printf("hit: %s %s\n", $doc->score, $doc->uri);
+ }
+
+=head1 DESCRIPTION
+
+Dezi::Doc represents one document in a collection.
+
+=head1 METHODS
+
+=head2 new
+
+Create new object. Takes pairs of key/values where the keys are one of:
+
+=over
+
+=item mime_type
+
+Sometimes known as the content type. A MIME type indicates the kind
+of document this is.
+
+=item uri
+
+The unique URI for the document.
+
+=item mtime
+
+Last modified time. Should be expressed in Epoch seconds.
+
+=item size
+
+Length in bytes.
+
+=item content
+
+The document's content.
+
+=back
+
+=cut
+
+=head2 score
+
+When returned from a Dezi::Response->results array,
+the score attribute is the search ranking score.
+
+=head2 title
+
+When returned from a Dezi::Response->results array,
+the title is the document's parsed title.
+
+=head2 summary
+
+When returned from a Dezi::Response->results array,
+the summary is the snipped and highlighted extract
+from the document showing query terms in context.
+
+=cut
+
+=head2 as_string_ref
+
+Returns a scalar ref pointing at a copy of content().
+
+=cut
 
 sub as_string_ref {
     my $self    = shift;

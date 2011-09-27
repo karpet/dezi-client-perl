@@ -10,12 +10,15 @@ repository 'git://github.com/karpet/dezi-client-perl.git';
 
 build_requires 'Test::More';
 
+# Dezi server not required for client, but 
+# should be at least version 0.001002 on server-side.
+
 requires 'LWP::UserAgent';
 requires 'Class::XSAccessor';
 requires 'HTTP::Request';
-requires 'SWISH::Prog::Utils';
+requires 'SWISH::Prog::Utils' => '0.52';
 requires 'URI::Query';
-requries 'File::Slurp';
+requires 'File::Slurp';
 requires 'JSON';
 requires 'Carp';
 
