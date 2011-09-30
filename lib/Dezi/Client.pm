@@ -31,7 +31,7 @@ Dezi::Client - interact with a Dezi server
  $client->index( 'path/to/file.html' );
  
  # add/update an in-memory document to the index
- $client->index( \$html_doc, uri => 'foo/bar.html' );
+ $client->index( \$html_doc, 'foo/bar.html' );
  
  # add/update a Dezi::Doc to the index
  $client->index( $dezi_doc );
