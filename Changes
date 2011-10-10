@@ -3,3 +3,6 @@ Revision history for Dezi-Client
 0.001000    29 Sept 2011
         * First version, released on an unsuspecting world.
 
+0.001001    xxx
+        * add get_field and set_field to Dezi::Doc
+
