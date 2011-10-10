@@ -59,8 +59,17 @@ sub new {
     my $http_resp = shift or croak "HTTP::Response required";
     my $json      = from_json( $http_resp->decoded_content );
     my @res;
+    my @fields;
     for my $r ( @{ $json->{results} } ) {
-        push @res, Dezi::Doc->new(%$r);
+        if ( !@fields ) {
+            for my $k ( keys %$r ) {
+                if ( !Dezi::Doc->can($k) ) {
+                    push @fields, $k;
+                }
+            }
+        }
+        my %fields = map { $_ => $r->{$_} } @fields;
+        push @res, Dezi::Doc->new( %$r, _fields => \%fields );
     }
 
     # overwrite with objects

@@ -129,10 +129,10 @@ Returns the value of I<field_name>.
 sub get_field {
     my $self = shift;
     my $name = shift or croak "field_name required";
-    if ( !exists $self->{$name} ) {
+    if ( !exists $self->{_fields}->{$name} ) {
         return undef;
     }
-    return $self->{$name};
+    return $self->{_fields}->{$name};
 }
 
 =head2 set_field( I<field> => I<value> )

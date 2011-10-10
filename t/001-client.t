@@ -61,8 +61,9 @@ SKIP: {
         ok( $result->uri, "get result uri" );
         diag(
             sprintf(
-                "--\n uri: %s\n title: %s\n score: %s\n",
-                $result->uri, $result->title, $result->score
+                "--\n uri: %s\n title: %s\n score: %s\n swishmime: %s\n",
+                $result->uri,   $result->title,
+                $result->score, $result->get_field('swishmime')->[0],
             )
         );
     }
