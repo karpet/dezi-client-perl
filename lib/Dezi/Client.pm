@@ -115,6 +115,8 @@ sub new {
         }
         $self->{search_uri} = $paths->{search};
         $self->{index_uri}  = $paths->{index};
+        $self->{fields}     = $paths->{fields};
+        $self->{facets}     = $paths->{facets};
     }
 
     if (%args) {
@@ -211,6 +213,9 @@ required key is B<q> for the query string.
 
 Returns a Dezi::Response object on success, or 0 on failure. Check
 the last_response() accessor for the raw HTTP::Response object.
+
+ my $resp = $client->search('q' => 'foo')
+    or die "search failed: " . $client->last_response->status_line;
 
 =cut
 

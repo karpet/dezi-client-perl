@@ -9,6 +9,7 @@ use Class::XSAccessor {
     constructor => 'new',
     accessors => [qw( mime_type summary title content uri mtime size score )],
 };
+use Search::Tools::XML;
 
 =pod
 
@@ -29,6 +30,14 @@ Dezi::Doc - a Dezi client document
      content   => $html,
  );
  $client->index( $doc );
+ 
+ # construct a document with field/value pairs
+ my $doc2 = Dezi::Doc->new(
+    uri => 'auto/xml/magic',
+ );
+ $doc2->set_field('title' => 'ima dezi doc');
+ $doc2->set_field('body'  => 'hello world!');
+ $client->index( $doc2 );
  
  # search results are also Dezi::Doc objects
  for my $doc (@{ $response->results }) {
@@ -92,14 +101,57 @@ from the document showing query terms in context.
 
 =head2 as_string_ref
 
-Returns a scalar ref pointing at a copy of content().
+Returns a scalar ref pointing at the Dezi::Doc serialized,
+either the value of content() or a XML fragment representing
+values set with set_field().
 
 =cut
 
 sub as_string_ref {
-    my $self    = shift;
-    my $content = $self->content;
-    return \$content;
+    my $self = shift;
+    if ( exists $self->{_fields} ) {
+        my $xml
+            = Search::Tools::XML->perl_to_xml( $self->{_fields}, 'doc', 1 );
+        return \$xml;
+    }
+    else {
+        my $content = $self->content;
+        return \$content;
+    }
+}
+
+=head2 get_field( I<field_name> )
+
+Returns the value of I<field_name>.
+
+=cut
+
+sub get_field {
+    my $self = shift;
+    my $name = shift or croak "field_name required";
+    if ( !exists $self->{$name} ) {
+        return undef;
+    }
+    return $self->{$name};
+}
+
+=head2 set_field( I<field> => I<value> )
+
+Set the I<value> for field I<field>.
+
+This method also sets the mime_type() of the document object
+to 'application/xml' since that is how as_string_ref() will
+render the object.
+
+=cut
+
+sub set_field {
+    my $self  = shift;
+    my $field = shift or croak "field_name required";
+    my $value = shift;
+    croak "value required" unless defined $value;
+    $self->{_fields}->{$field} = $value;
+    $self->mime_type('application/xml');
 }
 
 1;
