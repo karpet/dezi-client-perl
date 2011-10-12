@@ -1,0 +1,112 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Dezi::Client;
+use Getopt::Long;
+
+our $VERSION = '0.001001';
+
+my $USAGE = <<EOF;
+usage: $0 [--server url] file [...fileN]
+
+$0 is an example application using Dezi::Client
+
+EOF
+
+my $server = 'http://localhost:5000';
+my $debug  = 0;
+my $query;
+GetOptions(
+    'debug'    => \$debug,
+    'server=s' => \$server,
+    'query=s'  => \$query,
+) or die $USAGE;
+
+if ( !@ARGV and !$query ) {
+    die $USAGE;
+}
+
+my $client = Dezi::Client->new(
+    server => $server,
+    debug  => $debug,
+);
+
+if ($query) {
+
+    # search the index
+    my $response = $client->search( q => $query );
+
+    # iterate over results
+    for my $result ( @{ $response->results } ) {
+        printf( "--\n uri: %s\n title: %s\n score: %s\n",
+            $result->uri, $result->title, $result->score );
+    }
+
+    # print stats
+    print '=' x 40, "\n";
+    printf( "       hits: %d\n", $response->total );
+    printf( "search time: %s\n", $response->search_time );
+    printf( " build time: %s\n", $response->build_time );
+    printf( "      query: %s\n", $response->query );
+
+}
+else {
+    for my $file (@ARGV) {
+        $client->index($file);
+    }
+}
+
+__END__
+
+=head1 AUTHOR
+
+Peter Karman, C<< <karman at cpan.org> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<bug-dezi-client at rt.cpan.org>, or through
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Dezi-Client>.  I will be notified, and then you'll
+automatically be notified of progress on your bug as I make changes.
+
+=head1 SUPPORT
+
+You can find documentation for this module with the perldoc command.
+
+    perldoc Dezi::Client
+
+
+You can also look for information at:
+
+=over 4
+
+=item * RT: CPAN's request tracker
+
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Dezi-Client>
+
+=item * AnnoCPAN: Annotated CPAN documentation
+
+L<http://annocpan.org/dist/Dezi-Client>
+
+=item * CPAN Ratings
+
+L<http://cpanratings.perl.org/d/Dezi-Client>
+
+=item * Search CPAN
+
+L<http://search.cpan.org/dist/Dezi-Client/>
+
+=back
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2011 Peter Karman.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of either: the GNU General Public License as published
+by the Free Software Foundation; or the Artistic License.
+
+See http://dev.perl.org/licenses/ for more information.
+
+
+=cut
