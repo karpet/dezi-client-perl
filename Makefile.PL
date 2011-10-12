@@ -23,6 +23,8 @@ requires 'File::Slurp';
 requires 'JSON';
 requires 'Carp';
 
+install_script 'bin/dezi-client';
+
 auto_install;
 
 WriteAll;
