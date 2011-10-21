@@ -53,7 +53,8 @@ if ($query) {
 }
 else {
     for my $file (@ARGV) {
-        $client->index($file);
+        my $resp = $client->index($file);
+        $debug and print $resp->content;
     }
 }
 
