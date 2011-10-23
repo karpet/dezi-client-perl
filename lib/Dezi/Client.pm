@@ -242,7 +242,8 @@ sub search {
     }
     my $search_uri = $self->{search_uri};
     my $query      = URI::Query->new(%args);
-    $query->replace( format => 'json' );    # force json response
+    $query->replace( t => 'json' );    # force json response
+    $query->strip('format');           # old-style name
     my $resp = $self->{ua}->get( $search_uri . '?' . $query );
     if ( !$resp->is_success ) {
         $self->{last_response} = $resp;
