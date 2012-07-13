@@ -2,7 +2,7 @@ package Dezi::Response;
 use strict;
 use warnings;
 
-our $VERSION = '0.001001';
+our $VERSION = '0.001002';
 
 use Carp;
 use JSON;

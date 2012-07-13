@@ -5,12 +5,15 @@ use warnings;
 use Dezi::Client;
 use Getopt::Long;
 
-our $VERSION = '0.001001';
+our $VERSION = '0.001002';
+
+my $THIS = $0;
 
 my $USAGE = <<EOF;
-usage: $0 [--server url] file [...fileN]
+usage: $THIS [--server url] file [...fileN]
+usage: $THIS [--server url] -q <query>
 
-$0 is an example application using Dezi::Client
+$THIS is an example application using Dezi::Client
 
 EOF
 

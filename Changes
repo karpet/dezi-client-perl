@@ -7,4 +7,6 @@ Revision history for Dezi-Client
         * add get_field and set_field to Dezi::Doc
         * added bin/dezi-client example application
 
+0.001002    xxx
+        * improve usage statement
 
