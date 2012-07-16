@@ -11,7 +11,7 @@ use HTTP::Request;
 use URI::Query;
 use SWISH::Prog::Utils;    # for MIME types
 use JSON;
-use File::Slurp;
+use Search::Tools;
 use Dezi::Response;
 
 # default is to treat everything like html,
@@ -139,7 +139,7 @@ sub new {
     return $self;
 }
 
-=head2 index( I<doc> [, I<uri>, I<content-type>] )
+=head2 index( I<doc> [, I<uri>, I<content-type>, I<GET_params>] )
 
 Add or update a document. I<doc> should be one of:
 
@@ -175,18 +175,22 @@ determine the result. Example:
     die "Failed to add path/to/foo.html to the Dezi index!";
  }
 
+I<GET_params> is an optional value. It is passed to URI::Query->new()
+internally and appended to the search_server/index URL.
+
 =cut
 
 sub index {
-    my $self         = shift;
-    my $doc          = shift or croak "doc required";
-    my $uri          = shift;                           # optional
-    my $content_type = shift;                           # optional
+    my $self           = shift;
+    my $doc            = shift or croak "doc required";
+    my $uri            = shift;                           # optional
+    my $content_type   = shift;                           # optional
+    my $payload_params = shift;                           # optional
 
     my $body_ref;
 
     if ( !ref $doc ) {
-        my $buf = read_file($doc);
+        my $buf = Search::Tools->slurp($doc);
         if ( !defined $buf ) {
             croak "unable to read $doc: $!";
         }
@@ -209,6 +213,9 @@ sub index {
     }
 
     my $server_uri = $self->{index_uri} . '/' . $uri;
+    if ($payload_params) {
+        $server_uri .= '?' . URI::Query->new($payload_params);
+    }
     my $req = HTTP::Request->new( 'POST', $server_uri );
     $content_type ||= SWISH::Prog::Utils->mime_type($uri);
     $req->header( 'Content-Type' => $content_type );

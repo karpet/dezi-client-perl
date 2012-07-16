@@ -19,7 +19,6 @@ requires 'HTTP::Request';
 requires 'SWISH::Prog::Utils' => '0.53';
 requires 'Search::Tools'      => '0.62';
 requires 'URI::Query';
-requires 'File::Slurp';
 requires 'JSON';
 requires 'Carp';
 
