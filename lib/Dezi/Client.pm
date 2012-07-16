@@ -81,6 +81,10 @@ params are not passed to new(), then the server will be
 interrogated at initial connect for the correct paths
 for searching and indexing.
 
+=item server_params I<params>
+
+Passed internally to URI::Query and appended to server I<url>.
+
 =item search I<path>
 
 The URI path for searching. Dezi defaults to B</search>.
@@ -112,7 +116,11 @@ sub new {
         $self->{index_uri}  = $self->{server} . delete $args{index};
     }
     else {
-        my $resp = $self->{ua}->get( $self->{server} );
+        my $uri = $self->{server};
+        if ( $args{server_params} ) {
+            $uri .= '?' . URI::Query->new( delete $args{server_params} );
+        }
+        my $resp = $self->{ua}->get($uri);
         if ( !$resp->is_success ) {
             croak $resp->status_line;
         }
