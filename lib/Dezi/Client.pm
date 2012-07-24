@@ -226,6 +226,9 @@ sub index {
     if ($payload_params) {
         $server_uri .= '?' . URI::Query->new($payload_params);
     }
+    else {
+        $server_uri .= '?' . $self->{server_params};
+    }
     my $req = HTTP::Request->new( 'POST', $server_uri );
     $content_type ||= SWISH::Prog::Utils->mime_type($uri);
     $req->header( 'Content-Type' => $content_type );
