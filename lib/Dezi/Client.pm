@@ -118,7 +118,9 @@ sub new {
     else {
         my $uri = $self->{server};
         if ( $args{server_params} ) {
-            $uri .= '?' . URI::Query->new( delete $args{server_params} );
+            $self->{server_params}
+                = URI::Query->new( delete $args{server_params} );
+            $uri .= '?' . $self->{server_params};
         }
         my $resp = $self->{ua}->get($uri);
         if ( !$resp->is_success ) {
@@ -259,6 +261,9 @@ sub search {
     my $query      = URI::Query->new(%args);
     $query->replace( t => 'json' );    # force json response
     $query->strip('format');           # old-style name
+    if ( $self->{server_params} ) {
+        $query .= $self->{server_params};
+    }
     my $resp = $self->{ua}->get( $search_uri . '?' . $query );
     if ( !$resp->is_success ) {
         $self->{last_response} = $resp;
@@ -296,6 +301,9 @@ sub delete {
     my $uri = shift or croak "uri required";
 
     my $server_uri = $self->{index_uri} . '/' . $uri;
+    if ( $self->{server_params} ) {
+        $server_uri . '?' . $self->{server_params};
+    }
     my $req = HTTP::Request->new( 'DELETE', $server_uri );
     $self->{debug} and Data::Dump::dump $req;
     return $self->{ua}->request($req);
