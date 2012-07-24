@@ -302,7 +302,7 @@ sub delete {
 
     my $server_uri = $self->{index_uri} . '/' . $uri;
     if ( $self->{server_params} ) {
-        $server_uri . '?' . $self->{server_params};
+        $server_uri .= '?' . $self->{server_params};
     }
     my $req = HTTP::Request->new( 'DELETE', $server_uri );
     $self->{debug} and Data::Dump::dump $req;
