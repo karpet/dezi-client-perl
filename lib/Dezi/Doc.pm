@@ -91,11 +91,19 @@ the score attribute is the search ranking score.
 When returned from a Dezi::Response->results array,
 the title is the document's parsed title.
 
+B<NOTE> you cannot set the title of a doc object when
+sending to the index. See set_field() instead.
+
 =head2 summary
 
 When returned from a Dezi::Response->results array,
 the summary is the snipped and highlighted extract
 from the document showing query terms in context.
+
+B<NOTE> you cannot set the summary of a doc object when
+sending to the index. The summary is a result field only.
+It typically represents all or snipped part of the
+C<swishdescription> field in the index.
 
 =cut
 
