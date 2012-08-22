@@ -12,7 +12,7 @@ use_ok('Dezi::Doc');
 SKIP: {
 
     diag("set DEZI_URL to test Dezi::Client") unless $ENV{DEZI_URL};
-    skip "set DEZI_URL to test Dezi::Client", 19 unless $ENV{DEZI_URL};
+    skip "set DEZI_URL to test Dezi::Client", 18 unless $ENV{DEZI_URL};
 
     # open a connection
     ok( my $client = Dezi::Client->new( server => $ENV{DEZI_URL}, ),
