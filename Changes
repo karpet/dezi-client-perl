@@ -7,6 +7,6 @@ Revision history for Dezi-Client
         * add get_field and set_field to Dezi::Doc
         * added bin/dezi-client example application
 
-0.001002    xxx
+0.001002    22 Aug 2012
         * improve usage statement
         * add server_params

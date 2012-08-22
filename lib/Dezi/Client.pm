@@ -226,7 +226,7 @@ sub index {
     if ($payload_params) {
         $server_uri .= '?' . URI::Query->new($payload_params);
     }
-    else {
+    elsif ( $self->{server_params} ) {
         $server_uri .= '?' . $self->{server_params};
     }
     my $req = HTTP::Request->new( 'POST', $server_uri );
