@@ -262,7 +262,7 @@ sub search {
     }
     my $search_uri = $self->{search_uri};
     my $query      = URI::Query->new(%args);
-    $query->replace( t => 'json' );    # force json response
+    $query->replace( t => 'JSON' );    # force json response
     $query->strip('format');           # old-style name
     if ( $self->{server_params} ) {
         $query .= $self->{server_params};
