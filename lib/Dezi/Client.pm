@@ -177,7 +177,7 @@ I<scalar_ref> case, where I<uri> is required. If specified,
 the values are passed explicitly in the HTTP headers to the Dezi
 server. If not specified, they are (hopefully intelligently) guessed at.
 
-Returns a HTTP::Response object which can be interrogated to
+Returns a L<HTTP::Response> object which can be interrogated to
 determine the result. Example:
 
  my $resp = $client->index( file => 'path/to/foo.html' );
@@ -243,11 +243,11 @@ sub index {
 =head2 search( I<params> )
 
 Fetch search results from a Dezi server. I<params> can be
-any key/value pair as described in Search::OpenSearch. The only
+any key/value pair as described in L<Search::OpenSearch::Engine>. The only
 required key is B<q> for the query string.
 
-Returns a Dezi::Response object on success, or 0 on failure. Check
-the last_response() accessor for the raw HTTP::Response object.
+Returns a L<Dezi::Response> object on success, or 0 on failure. Check
+the last_response() accessor for the raw L<HTTP::Response> object.
 
  my $resp = $client->search('q' => 'foo')
     or die "search failed: " . $client->last_response->status_line;
@@ -278,7 +278,7 @@ sub search {
 
 =head2 last_response
 
-Returns the last HTTP::Response object that the Client object
+Returns the last L<HTTP::Response> object that the Client object
 interacted with. Useful when search() returns false (HTTP failure).
 Example:
 
