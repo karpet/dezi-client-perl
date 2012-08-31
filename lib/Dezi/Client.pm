@@ -309,7 +309,71 @@ sub delete {
     }
     my $req = HTTP::Request->new( 'DELETE', $server_uri );
     $self->{debug} and Data::Dump::dump $req;
-    return $self->{ua}->request($req);
+    $self->{last_response} = $self->{ua}->request($req);
+    return $self->{last_response};
+}
+
+=head2 commit
+
+Send a COMMIT HTTP request to the server. This is only
+useful is the server has been configured with:
+
+ engine_config => {
+     autocommit => 0,
+ }
+
+Otherwise the server will not act on the index
+and will return a 400 response, indicating an
+invalid request.
+
+If successful and at least one document
+was committed, returns a 200 response.
+
+If successful and no documents were committed,
+returns a 204, indicating no un-committed changes
+were pending.
+
+=cut
+
+sub commit {
+    my $self       = shift;
+    my $server_uri = $self->{index_uri} . '/';
+    if ( $self->{server_params} ) {
+        $server_uri .= '?' . $self->{server_params};
+    }
+    my $req = HTTP::Request->new( 'COMMIT', $server_uri );
+    $self->{debug} and Data::Dump::dump $req;
+    $self->{last_response} = $self->{ua}->request($req);
+    return $self->{last_response};
+}
+
+=head2 rollback
+
+Send a ROLLBACK HTTP request to the server. This is only
+useful is the server has been configured with:
+
+ engine_config => {
+     autocommit => 0,
+ }
+
+Otherwise the server will not act on the index
+and will return a 400 response, indicating an
+invalid request.
+
+If successful returns a 200 response.
+
+=cut
+
+sub rollback {
+    my $self       = shift;
+    my $server_uri = $self->{index_uri} . '/';
+    if ( $self->{server_params} ) {
+        $server_uri .= '?' . $self->{server_params};
+    }
+    my $req = HTTP::Request->new( 'ROLLBACK', $server_uri );
+    $self->{debug} and Data::Dump::dump $req;
+    $self->{last_response} = $self->{ua}->request($req);
+    return $self->{last_response};
 }
 
 1;

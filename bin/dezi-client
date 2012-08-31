@@ -20,13 +20,17 @@ EOF
 my $server = 'http://localhost:5000';
 my $debug  = 0;
 my $query;
+my $commit;
+my $rollback;
 GetOptions(
     'debug'    => \$debug,
     'server=s' => \$server,
     'query=s'  => \$query,
+    'commit'   => \$commit,
+    'rollback' => \$rollback,
 ) or die $USAGE;
 
-if ( !@ARGV and !$query ) {
+if ( !@ARGV and !$query and !$commit and !$rollback ) {
     die $USAGE;
 }
 
@@ -53,6 +57,14 @@ if ($query) {
     printf( " build time: %s\n", $response->build_time );
     printf( "      query: %s\n", $response->query );
 
+}
+elsif ($commit) {
+    printf( "COMMIT response: %s\n", $client->commit->status_line );
+    printf( "%s\n",                  $client->last_response->content );
+}
+elsif ($rollback) {
+    printf( "ROLLBACK response: %s\n", $client->rollback->status_line );
+    printf( "%s\n",                    $client->last_response->content );
 }
 else {
     for my $file (@ARGV) {
