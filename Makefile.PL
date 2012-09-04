@@ -10,8 +10,8 @@ repository 'git://github.com/karpet/dezi-client-perl.git';
 
 build_requires 'Test::More';
 
-# Dezi server not required for client, but 
-# should be at least version 0.001002 on server-side.
+# Dezi server not required for client, but
+# should be at least version 0.001008 on server-side.
 
 requires 'LWP::UserAgent';
 requires 'Class::XSAccessor';
@@ -26,5 +26,15 @@ install_script 'bin/dezi-client';
 
 auto_install;
 
-WriteAll;
-
+WriteMakefile(
+    PL_FILES => {},
+    dist     => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+    clean    => {
+        FILES => join(
+            ' ',
+            qw(
+                Dezi-Client-*
+                )
+        )
+    }
+);

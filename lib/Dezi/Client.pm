@@ -3,7 +3,7 @@ package Dezi::Client;
 use warnings;
 use strict;
 
-our $VERSION = '0.001002_01';
+our $VERSION = '0.001003';
 
 use Carp;
 use LWP::UserAgent;
@@ -114,6 +114,10 @@ sub new {
     if ( $args{search} and $args{index} ) {
         $self->{search_uri} = $self->{server} . delete $args{search};
         $self->{index_uri}  = $self->{server} . delete $args{index};
+        $self->{commit_uri}
+            = $self->{server} . ( delete $args{commit} || 'commit' );
+        $self->{rollback_uri}
+            = $self->{server} . ( delete $args{rollback} || 'rollback' );
     }
     else {
         my $uri = $self->{server};
@@ -136,10 +140,12 @@ sub new {
                 . $resp->status_line . " "
                 . $resp->decoded_content;
         }
-        $self->{search_uri} = $paths->{search};
-        $self->{index_uri}  = $paths->{index};
-        $self->{fields}     = $paths->{fields};
-        $self->{facets}     = $paths->{facets};
+        $self->{search_uri}   = $paths->{search};
+        $self->{index_uri}    = $paths->{index};
+        $self->{commit_uri}   = $paths->{commit};
+        $self->{rollback_uri} = $paths->{rollback};
+        $self->{fields}       = $paths->{fields};
+        $self->{facets}       = $paths->{facets};
     }
 
     if (%args) {
@@ -337,11 +343,11 @@ were pending.
 
 sub commit {
     my $self       = shift;
-    my $server_uri = $self->{index_uri} . '/';
+    my $server_uri = $self->{commit_uri} . '/';
     if ( $self->{server_params} ) {
         $server_uri .= '?' . $self->{server_params};
     }
-    my $req = HTTP::Request->new( 'COMMIT', $server_uri );
+    my $req = HTTP::Request->new( 'POST', $server_uri );
     $self->{debug} and Data::Dump::dump $req;
     $self->{last_response} = $self->{ua}->request($req);
     return $self->{last_response};
@@ -366,11 +372,11 @@ If successful returns a 200 response.
 
 sub rollback {
     my $self       = shift;
-    my $server_uri = $self->{index_uri} . '/';
+    my $server_uri = $self->{rollback_uri} . '/';
     if ( $self->{server_params} ) {
         $server_uri .= '?' . $self->{server_params};
     }
-    my $req = HTTP::Request->new( 'ROLLBACK', $server_uri );
+    my $req = HTTP::Request->new( 'POST', $server_uri );
     $self->{debug} and Data::Dump::dump $req;
     $self->{last_response} = $self->{ua}->request($req);
     return $self->{last_response};

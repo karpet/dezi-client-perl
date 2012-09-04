@@ -11,6 +11,6 @@ Revision history for Dezi-Client
         * improve usage statement
         * add server_params
 
-0.001003    xxx
+0.001003    3 Sept 2012
         * add commit() and rollback()
 
