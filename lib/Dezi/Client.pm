@@ -322,10 +322,10 @@ sub delete {
 =head2 commit
 
 Send a COMMIT HTTP request to the server. This is only
-useful is the server has been configured with:
+useful if the server has been configured with:
 
  engine_config => {
-     autocommit => 0,
+     auto_commit => 0,
  }
 
 Otherwise the server will not act on the index
@@ -356,10 +356,10 @@ sub commit {
 =head2 rollback
 
 Send a ROLLBACK HTTP request to the server. This is only
-useful is the server has been configured with:
+useful if the server has been configured with:
 
  engine_config => {
-     autocommit => 0,
+     auto_commit => 0,
  }
 
 Otherwise the server will not act on the index
