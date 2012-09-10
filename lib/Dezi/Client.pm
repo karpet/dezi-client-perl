@@ -93,6 +93,14 @@ The URI path for searching. Dezi defaults to B</search>.
 
 The URI path for indexing. Dezi defaults to B</index>.
 
+=item username I<username>
+
+=item password I<password>
+
+If present, the username and password credentials will
+be set in each internal HTTP::Request object for any
+non-idempotent action (delete(), index(), commit(), rollback()).
+ 
 =back
 
 =cut
@@ -147,6 +155,11 @@ sub new {
         $self->{fields}       = $paths->{fields};
         $self->{facets}       = $paths->{facets};
     }
+
+    $self->{_creds} = {
+        username => delete $args{username},
+        password => delete $args{password},
+    };
 
     if (%args) {
         croak "Invalid params to new(): " . join( ", ", keys %args );
@@ -240,6 +253,13 @@ sub index {
     $req->header( 'Content-Type' => $content_type );
     $req->content($$body_ref);    # TODO decode into bytes
 
+    if (   defined $self->{_creds}->{username}
+        && defined $self->{_creds}->{password} )
+    {
+        $req->authorization_basic( $self->{_creds}->{username},
+            $self->{_creds}->{password} );
+    }
+
     $self->{debug} and Data::Dump::dump $req;
 
     return $self->{ua}->request($req);
@@ -314,6 +334,12 @@ sub delete {
         $server_uri .= '?' . $self->{server_params};
     }
     my $req = HTTP::Request->new( 'DELETE', $server_uri );
+    if (   defined $self->{_creds}->{username}
+        && defined $self->{_creds}->{password} )
+    {
+        $req->authorization_basic( $self->{_creds}->{username},
+            $self->{_creds}->{password} );
+    }
     $self->{debug} and Data::Dump::dump $req;
     $self->{last_response} = $self->{ua}->request($req);
     return $self->{last_response};
@@ -348,6 +374,12 @@ sub commit {
         $server_uri .= '?' . $self->{server_params};
     }
     my $req = HTTP::Request->new( 'POST', $server_uri );
+    if (   defined $self->{_creds}->{username}
+        && defined $self->{_creds}->{password} )
+    {
+        $req->authorization_basic( $self->{_creds}->{username},
+            $self->{_creds}->{password} );
+    }
     $self->{debug} and Data::Dump::dump $req;
     $self->{last_response} = $self->{ua}->request($req);
     return $self->{last_response};
@@ -377,6 +409,12 @@ sub rollback {
         $server_uri .= '?' . $self->{server_params};
     }
     my $req = HTTP::Request->new( 'POST', $server_uri );
+    if (   defined $self->{_creds}->{username}
+        && defined $self->{_creds}->{password} )
+    {
+        $req->authorization_basic( $self->{_creds}->{username},
+            $self->{_creds}->{password} );
+    }
     $self->{debug} and Data::Dump::dump $req;
     $self->{last_response} = $self->{ua}->request($req);
     return $self->{last_response};
@@ -424,10 +462,6 @@ L<http://cpanratings.perl.org/d/Dezi-Client>
 L<http://search.cpan.org/dist/Dezi-Client/>
 
 =back
-
-
-=head1 ACKNOWLEDGEMENTS
-
 
 =head1 COPYRIGHT & LICENSE
 

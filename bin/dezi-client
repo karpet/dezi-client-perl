@@ -22,12 +22,16 @@ my $debug  = 0;
 my $query;
 my $commit;
 my $rollback;
+my $username;
+my $password;
 GetOptions(
-    'debug'    => \$debug,
-    'server=s' => \$server,
-    'query=s'  => \$query,
-    'commit'   => \$commit,
-    'rollback' => \$rollback,
+    'debug'      => \$debug,
+    'server=s'   => \$server,
+    'query=s'    => \$query,
+    'commit'     => \$commit,
+    'rollback'   => \$rollback,
+    'username=s' => \$username,
+    'password=s' => \$password,
 ) or die $USAGE;
 
 if ( !@ARGV and !$query and !$commit and !$rollback ) {
@@ -35,8 +39,10 @@ if ( !@ARGV and !$query and !$commit and !$rollback ) {
 }
 
 my $client = Dezi::Client->new(
-    server => $server,
-    debug  => $debug,
+    server   => $server,
+    debug    => $debug,
+    username => $username,
+    password => $password,
 );
 
 if ($query) {
