@@ -14,7 +14,7 @@ Revision history for Dezi-Client
 0.001003    3 Sept 2012
         * add commit() and rollback()
 
-0.002000    xxx
+0.002000   11 Sept 2012
     * doc fixes
     * add username/password support for Dezi 0.002000.
 

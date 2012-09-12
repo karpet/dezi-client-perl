@@ -3,7 +3,7 @@ package Dezi::Client;
 use warnings;
 use strict;
 
-our $VERSION = '0.001003_01';
+our $VERSION = '0.002000';
 
 use Carp;
 use LWP::UserAgent;
@@ -323,6 +323,9 @@ sub last_response {
 
 Remove a document from the server. I<uri> must be the document's URI.
 
+Returns a L<HTTP::Response> object which can be interrogated to
+determine the result. A 200 response indicates success.
+
 =cut
 
 sub delete {
@@ -362,8 +365,11 @@ If successful and at least one document
 was committed, returns a 200 response.
 
 If successful and no documents were committed,
-returns a 204, indicating no un-committed changes
+returns a 204, indicating zero un-committed changes
 were pending.
+
+commit() returns a L<HTTP::Response> object which can be interrogated to
+determine the result.
 
 =cut
 
@@ -398,7 +404,10 @@ Otherwise the server will not act on the index
 and will return a 400 response, indicating an
 invalid request.
 
-If successful returns a 200 response.
+If successful the server returns a 200 response.
+
+rollback() returns a L<HTTP::Response> object which can be interrogated to
+determine the result.
 
 =cut
 
