@@ -62,6 +62,9 @@ if ($query) {
     printf( "search time: %s\n", $response->search_time );
     printf( " build time: %s\n", $response->build_time );
     printf( "      query: %s\n", $response->query );
+    if (defined $response->suggestions) {
+        printf( "suggestions: %s\n", join( ', ', @{ $response->suggestions } ) );
+    }
 
 }
 elsif ($commit) {

@@ -2,14 +2,17 @@ package Dezi::Response;
 use strict;
 use warnings;
 
-our $VERSION = '0.002000';
+our $VERSION = '0.002001';
 
 use Carp;
 use JSON;
 
 # TODO expose all attributes?
-use Class::XSAccessor { accessors =>
-        [qw( results total search_time build_time query fields facets )], };
+use Class::XSAccessor {
+    accessors => [
+        qw( results total search_time build_time query fields facets suggestions )
+    ],
+};
 
 use Dezi::Doc;
 
@@ -107,6 +110,10 @@ Returns array ref of field names.
 Returns array ref of facet objects.
 
 B<Facet objects are currently hashrefs. This may change in future.>
+
+=head2 suggestions
+
+Returns array ref of query suggestions.
 
 =cut
 

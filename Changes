@@ -18,3 +18,5 @@ Revision history for Dezi-Client
     * doc fixes
     * add username/password support for Dezi 0.002000.
 
+0.002001   17 Oct 2012
+    * add Response->suggestions
