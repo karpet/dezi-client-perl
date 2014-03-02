@@ -52,7 +52,11 @@ if ( defined $query ) {
 
     # check for error
     if ( !$response ) {
-        die "Dezi search failed: " . $client->last_response->status_line;
+        die sprintf(
+            "Dezi search failed: %s\n%s\n",
+            $client->last_response->status_line,
+            $client->last_response->content
+        );
     }
 
     # iterate over results
