@@ -34,7 +34,7 @@ GetOptions(
     'password=s' => \$password,
 ) or die $USAGE;
 
-if ( !@ARGV and !$query and !$commit and !$rollback ) {
+if ( !@ARGV and !$commit and !$rollback and !defined $query ) {
     die $USAGE;
 }
 
@@ -45,10 +45,15 @@ my $client = Dezi::Client->new(
     password => $password,
 );
 
-if ($query) {
+if ( defined $query ) {
 
     # search the index
     my $response = $client->search( q => $query );
+
+    # check for error
+    if ( !$response ) {
+        die "Dezi search failed: " . $client->last_response->status_line;
+    }
 
     # iterate over results
     for my $result ( @{ $response->results } ) {
@@ -62,8 +67,9 @@ if ($query) {
     printf( "search time: %s\n", $response->search_time );
     printf( " build time: %s\n", $response->build_time );
     printf( "      query: %s\n", $response->query );
-    if (defined $response->suggestions) {
-        printf( "suggestions: %s\n", join( ', ', @{ $response->suggestions } ) );
+    if ( defined $response->suggestions ) {
+        printf( "suggestions: %s\n",
+            join( ', ', @{ $response->suggestions } ) );
     }
 
 }

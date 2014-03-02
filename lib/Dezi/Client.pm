@@ -3,7 +3,7 @@ package Dezi::Client;
 use warnings;
 use strict;
 
-our $VERSION = '0.002001';
+our $VERSION = '0.002002';
 
 use Carp;
 use LWP::UserAgent;

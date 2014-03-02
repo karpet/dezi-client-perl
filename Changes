@@ -1,5 +1,9 @@
 Revision history for Dezi-Client
 
+0.002002 xx
+ - change !$query to !defined $query in dezi-client bin
+ - die on !$response in dezi-client bin
+
 0.002001 17 Oct 2012
  - add Response->suggestions
 

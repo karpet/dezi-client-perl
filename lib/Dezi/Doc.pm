@@ -2,7 +2,7 @@ package Dezi::Doc;
 use strict;
 use warnings;
 
-our $VERSION = '0.002001';
+our $VERSION = '0.002002';
 
 use Carp;
 use Class::XSAccessor {
