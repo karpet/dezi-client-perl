@@ -57,6 +57,14 @@ This class is used internally by Dezi::Client.
 Returns a new response. I<http_response> should be a HTTP::Response
 object from a Dezi JSON response.
 
+=head2 BUILDARGS
+
+Allows for single argument I<http_response> instead of named pair.
+
+=head2 BUILD
+
+Initializes objects.
+
 =cut
 
 around BUILDARGS => sub {
@@ -139,6 +147,10 @@ B<Facet objects are currently hashrefs. This may change in future.>
 =head2 suggestions
 
 Returns array ref of query suggestions.
+
+=head2 http_response
+
+Returns raw HTTP:Response object.
 
 =cut
 
