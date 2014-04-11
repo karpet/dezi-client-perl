@@ -1,3 +1,5 @@
+#!/usr/bin/env perl
+use strict;
 use inc::Module::Install;
 
 name 'Dezi-Client';
@@ -14,9 +16,11 @@ build_requires 'Test::More';
 # should be at least version 0.001008 on server-side.
 
 requires 'LWP::UserAgent';
-requires 'Class::XSAccessor';
+requires 'LWP::MediaTypes';
+requires 'Moo';
+requires 'namespace::sweep';
+requires 'Type::Tiny';
 requires 'HTTP::Request';
-requires 'SWISH::Prog::Utils' => '0.53';
 requires 'Search::Tools'      => '0.62';
 requires 'URI::Query';
 requires 'JSON';

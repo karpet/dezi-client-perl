@@ -3,23 +3,16 @@ package Dezi::Client;
 use warnings;
 use strict;
 
-our $VERSION = '0.002002';
+our $VERSION = '0.003000';
 
 use Carp;
 use LWP::UserAgent;
+use LWP::MediaTypes;
 use HTTP::Request;
 use URI::Query;
-use SWISH::Prog::Utils;    # for MIME types
 use JSON;
 use Search::Tools;
 use Dezi::Response;
-
-# default is to treat everything like html,
-# but we want to treat everything like text unless
-# it has an explicit extension.
-# TODO use libmagic or something better than
-# SWISH::Prog::Utils + MIME::Types
-$SWISH::Prog::Utils::DefaultExtension = 'txt';
 
 =head1 NAME
 
@@ -249,9 +242,10 @@ sub index {
         $server_uri .= '?' . $self->{server_params};
     }
     my $req = HTTP::Request->new( 'POST', $server_uri );
-    $content_type ||= SWISH::Prog::Utils->mime_type($uri);
-    $req->header( 'Content-Type' => $content_type );
-    $req->content($$body_ref);    # TODO decode into bytes
+    $content_type ||= guess_media_type( $uri, $req );
+    $req->header( 'Content-Type' => $content_type )
+        unless $req->header('Content-Type');
+    $req->content($$body_ref);    # TODO encode into bytes ??
 
     if (   defined $self->{_creds}->{username}
         && defined $self->{_creds}->{password} )
@@ -299,7 +293,7 @@ sub search {
         return 0;
     }
     $self->{debug} and Data::Dump::dump $resp;
-    return Dezi::Response->new($resp);
+    return Dezi::Response->new(http_response => $resp);
 }
 
 =head2 last_response

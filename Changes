@@ -1,5 +1,9 @@
 Revision history for Dezi-Client
 
+0.003000 11 April 2014
+ - rewrite to use Moo, LWP::MediaTypes and Type::Tiny
+ - drop SWISH::Prog::Utils
+
 0.002002 02 March 2014
  - change !$query to !defined $query in dezi-client bin
  - die on !$response in dezi-client bin

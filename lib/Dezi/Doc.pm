@@ -1,15 +1,20 @@
 package Dezi::Doc;
-use strict;
-use warnings;
-
-our $VERSION = '0.002002';
-
+use Moo;
+use Types::Standard qw( Str Int Num );
 use Carp;
-use Class::XSAccessor {
-    constructor => 'new',
-    accessors => [qw( mime_type summary title content uri mtime size score )],
-};
 use Search::Tools::XML;
+use namespace::sweep;
+
+our $VERSION = '0.003000';
+
+has 'mime_type' => ( is => 'rw', isa => Str );
+has 'summary'   => ( is => 'rw', isa => Str );
+has 'title'     => ( is => 'rw', isa => Str );
+has 'content'   => ( is => 'rw', isa => Str );
+has 'uri'       => ( is => 'rw', isa => Str );
+has 'mtime'     => ( is => 'rw', isa => Int );
+has 'size'      => ( is => 'rw', isa => Int );
+has 'score'     => ( is => 'rw', isa => Num );
 
 =pod
 
