@@ -1,6 +1,6 @@
 package Dezi::Doc;
 use Moo;
-use Types::Standard qw( Str Int Num );
+use Types::Standard qw( Str Int Num HashRef );
 use Carp;
 use Search::Tools::XML;
 use namespace::sweep;
@@ -15,6 +15,7 @@ has 'uri'       => ( is => 'rw', isa => Str );
 has 'mtime'     => ( is => 'rw', isa => Int );
 has 'size'      => ( is => 'rw', isa => Int );
 has 'score'     => ( is => 'rw', isa => Num );
+has '_fields'   => ( is => 'rw', isa => HashRef );
 
 =pod
 
