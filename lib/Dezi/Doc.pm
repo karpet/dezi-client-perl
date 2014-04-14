@@ -5,7 +5,7 @@ use Carp;
 use Search::Tools::XML;
 use namespace::sweep;
 
-our $VERSION = '0.003000';
+our $VERSION = '0.003001';
 
 has 'mime_type' => ( is => 'rw', isa => Str );
 has 'summary'   => ( is => 'rw', isa => Str );
