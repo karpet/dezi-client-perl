@@ -21,7 +21,7 @@ requires 'Moo';
 requires 'namespace::sweep';
 requires 'Type::Tiny';
 requires 'HTTP::Request';
-requires 'Search::Tools'      => '0.62';
+requires 'Search::Tools' => '1.000';
 requires 'URI::Query';
 requires 'JSON';
 requires 'Carp';

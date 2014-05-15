@@ -170,7 +170,7 @@ Add or update a document. I<doc> should be one of:
 =item I<path>
 
 I<path> should be a readable file on an accessible filesystem.
-I<path> will be read with File::Slurp.
+I<path> will be read with Search::Tools->slurp.
 
 =item I<scalar_ref>
 

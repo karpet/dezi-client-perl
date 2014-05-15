@@ -3,7 +3,6 @@ use strict;
 use warnings;
 
 use Test::More tests => 25;
-use File::Slurp;
 use Data::Dump qw( dump );
 use JSON;
 
@@ -34,7 +33,7 @@ SKIP: {
 
     # add/update a Dezi::Doc to the index
     my $dezi_doc = Dezi::Doc->new( uri => 't/test-dezi-doc.xml' );
-    $dezi_doc->content( scalar read_file( $dezi_doc->uri ) );
+    $dezi_doc->content( Search::Tools->slurp( $dezi_doc->uri ) );
     ok( $resp = $client->index($dezi_doc), "index Dezi::Doc" );
     ok( $resp->is_success, "index Dezi::Doc success" );
 
