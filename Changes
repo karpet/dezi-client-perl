@@ -1,5 +1,8 @@
 Revision history for Dezi-Client
 
+0.003002 xxx
+ - fix references to File::Slurp
+
 0.003001 13 April 2014
  - add tests for reserved field mtime
  - add _fields private attribute to preserve pre-0.3 get/set field feature

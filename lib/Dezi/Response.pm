@@ -6,7 +6,7 @@ use JSON;
 use Dezi::Doc;
 use namespace::sweep;
 
-our $VERSION = '0.003001';
+our $VERSION = '0.003002';
 
 has 'http_response' => ( is => 'ro', isa => InstanceOf ['HTTP::Response'] );
 has 'results'       => ( is => 'rw', isa => Maybe      [ArrayRef] );
