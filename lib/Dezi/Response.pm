@@ -1,6 +1,6 @@
 package Dezi::Response;
 use Moo;
-use Types::Standard qw( Str Num Int ArrayRef InstanceOf Maybe );
+use Types::Standard qw( Str Num Int ArrayRef HashRef InstanceOf Maybe );
 use Carp;
 use JSON;
 use Dezi::Doc;
@@ -15,7 +15,7 @@ has 'search_time'   => ( is => 'rw', isa => Num );
 has 'build_time'    => ( is => 'rw', isa => Num );
 has 'query'         => ( is => 'rw', isa => Str );
 has 'fields'        => ( is => 'rw', isa => Maybe      [ArrayRef] );
-has 'facets'        => ( is => 'rw', isa => Maybe      [ArrayRef] );
+has 'facets'        => ( is => 'rw', isa => Maybe      [HashRef] );
 has 'suggestions'   => ( is => 'rw', isa => Maybe      [ArrayRef] );
 
 =pod
