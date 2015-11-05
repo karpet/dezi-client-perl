@@ -1,5 +1,8 @@
 Revision history for Dezi-Client
 
+0.003003 05 Nov 2015
+ - fix packaging error https://rt.cpan.org/Ticket/Display.html?id=108261
+
 0.003002 30 April 2015
  - fix references to File::Slurp
  - fix facet definition (HashRef not ArrayRef)

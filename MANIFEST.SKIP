@@ -32,5 +32,8 @@
 \bcover_db\b
 
 MANIFEST.SKIP
+MYMETA.*
 ^build$
 
+# dev files only
+example-dezi-server-config.pl
