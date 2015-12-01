@@ -3,9 +3,9 @@ use Moo;
 use Types::Standard qw( Str Int Num HashRef );
 use Carp;
 use Search::Tools::XML;
-use namespace::sweep;
+use namespace::autoclean;
 
-our $VERSION = '0.003003';
+our $VERSION = '0.003004';
 
 has 'mime_type' => ( is => 'rw', isa => Str );
 has 'summary'   => ( is => 'rw', isa => Str );

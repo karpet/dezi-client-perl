@@ -4,9 +4,9 @@ use Types::Standard qw( Str Num Int ArrayRef HashRef InstanceOf Maybe );
 use Carp;
 use JSON;
 use Dezi::Doc;
-use namespace::sweep;
+use namespace::autoclean;
 
-our $VERSION = '0.003003';
+our $VERSION = '0.003004';
 
 has 'http_response' => ( is => 'ro', isa => InstanceOf ['HTTP::Response'] );
 has 'results'       => ( is => 'rw', isa => Maybe      [ArrayRef] );

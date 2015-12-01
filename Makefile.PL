@@ -18,7 +18,7 @@ build_requires 'Test::More';
 requires 'LWP::UserAgent';
 requires 'LWP::MediaTypes';
 requires 'Moo';
-requires 'namespace::sweep';
+requires 'namespace::autoclean';
 requires 'Type::Tiny';
 requires 'HTTP::Request';
 requires 'Search::Tools' => '1.000';

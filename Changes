@@ -1,5 +1,8 @@
 Revision history for Dezi-Client
 
+0.003004 01 Dec 2015
+ - switch from namespace::sweep to namespace::autoclean
+
 0.003003 05 Nov 2015
  - fix packaging error https://rt.cpan.org/Ticket/Display.html?id=108261
 
